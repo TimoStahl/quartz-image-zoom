@@ -341,28 +341,31 @@ dialog.lightbox img {
 
                 let dialog;
                 function getDialog() {
-                  if (dialog) return dialog;
-                  dialog = document.createElement('dialog');
-                  dialog.className = 'lightbox';
-                  const close = document.createElement('button');
-                  close.className = 'lightbox-close';
-                  close.setAttribute('aria-label', 'Close lightbox');
-                  close.innerHTML = '&times;';
-                  const img = document.createElement('img');
-                  img.alt = '';
-                  dialog.append(close, img);
-                  document.body.appendChild(dialog);
+                  if (dialog && dialog.isConnected) return dialog;
+                  if (!dialog) {
+                    dialog = document.createElement('dialog');
+                    dialog.className = 'lightbox';
+                    const close = document.createElement('button');
+                    close.className = 'lightbox-close';
+                    close.setAttribute('aria-label', 'Close lightbox');
+                    close.innerHTML = '&times;';
+                    const img = document.createElement('img');
+                    img.alt = '';
+                    dialog.append(close, img);
 
-                  dialog.addEventListener('click', (e) => {
-                    // Backdrop clicks land on the dialog itself; the image and
-                    // the close button both also dismiss.
-                    if (e.target === dialog || e.target === img || e.target === close) {
-                      dialog.close();
-                    }
-                  });
-                  dialog.addEventListener('close', () => {
-                    document.documentElement.style.overflow = '';
-                  });
+                    dialog.addEventListener('click', (e) => {
+                      // Backdrop clicks land on the dialog itself; the image and
+                      // the close button both also dismiss.
+                      if (e.target === dialog || e.target === img || e.target === close) {
+                        dialog.close();
+                      }
+                    });
+                    dialog.addEventListener('close', () => {
+                      document.documentElement.style.overflow = '';
+                    });
+                  }
+                  // Re-attach to current body after SPA navigation detaches it.
+                  document.body.appendChild(dialog);
                   return dialog;
                 }
 
