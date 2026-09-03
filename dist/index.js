@@ -365,6 +365,10 @@ dialog.lightbox img {
                     });
                   }
                   // Re-attach to current body after SPA navigation detaches it.
+                  // Detaching a modal dialog from the document downgrades it to a
+                  // non-modal "open" dialog, so a later showModal() on the same
+                  // node throws InvalidStateError unless we clear that state first.
+                  if (dialog.open) dialog.close();
                   document.body.appendChild(dialog);
                   return dialog;
                 }
